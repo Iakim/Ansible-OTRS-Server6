@@ -2,11 +2,11 @@
 - hosts: test
   remote_user: root
   vars:
-    otrs_user_pass: $6$U4/4vGhOOkdLbH31$fS5eKM.aiZnhMod4KGogFbqPCpsj2gxyeSNdWxQ3WyhmuFEpfzZpzZCGxE//y2TzG0v1/6MxzrWt8k5fyfQ181
+    otrs_user_pass: $6$U4/4vGhOOkdL15431$fS5eKM.aiZnhMod4KGogFbqPCpsj2gxyeSNdWxQ3WyhmuFE36ZpzZCGxE//y2TzG0v1/6MxzrWt8k5fyfQ181
 
   tasks:
 
-  - name: Parando o serviço do Firewall
+  - name: Stopping the Firewall service
     service: name=firewalld state=stopped enabled=no
 
   - selinux:
@@ -22,7 +22,7 @@
       key: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}
       state: present
 
-  - name: Instalando o Apache e Mod_Perl
+  - name: Installing Apache and Mod_Perl
     yum: state=latest name={{ item }}
     with_items:
     - httpd
@@ -41,19 +41,19 @@
   - name: Chkconfig ON
     shell: /sbin/chkconfig mariadb on
 
-  - name: Inciando o Banco de Dados
+  - name: Starting the Database
     service: name=mariadb state=started enabled=yes
 
-  - name: Removendo o arquivo my.cnf
+  - name: Removing the my.cnf file
     shell: rm -rf /etc/my.cnf
 
-  - name: Criando o arquivo my.cnf
+  - name: Creating the my.cnf file
     file:
       path: /etc/my.cnf
       state: touch
       mode: "u+rw,g-wx,o-wx"
 
-  - name: Adicionando linhas no arquivo my.cnf
+  - name: Adding rows in the my.cnf file
     lineinfile:
       dest: /etc/my.cnf
       line: '{{ item }}'
@@ -80,37 +80,37 @@
       - '# include all files from the config directory'
       - '!includedir /etc/my.cnf.d'
 
-  - name: Parando o Banco de Dados
+  - name: Stopping the Database
     service: name=mariadb state=stopped
 
-  - name: Deletando arquivos logfile0
+  - name: Deleting logfile0 file
     shell: rm -rf /var/lib/mysql/lib_logfile0
 
-  - name: Deletando arquivos logfile1
+  - name: Deleting logfile1 file
     shell: rm -rf /var/lib/mysql/lib_logfile1
 
-  - name: Inciando o Banco de Dados novamente
+  - name:  Starting the database again
     service: name=mariadb state=started
 
-  - name: Instalando Wget e bzip2
+  - name: Installing Wget and bzip2
     yum: state=latest name={{ item }}
     with_items:
     - wget
     - bzip2
 
-  - name: Realizando download do OTRS
+  - name: Downloading OTRS
     shell: wget -c -P /opt/  https://ftp.otrs.org/pub/otrs/otrs-6.0.2.tar.bz2
 
-  - name: Descompatando arquivo
+  - name: Unlinking file
     shell: tar -jxpf /opt/otrs-6.0.2.tar.bz2 -C /opt/
 
-  - name: Renomeando a pasta para OTRS
+  - name: Renaming the OTRS folder
     shell: mv /opt/otrs-6.0.2 /opt/otrs
 
-  - name: Criando usuário OTRS
+  - name: Creating OTRS User
     user: name=otrs password={{ otrs_user_pass }} comment="OTRS User" group=apache
 
-  - name: Instalando pacotes PERL
+  - name: Installing PERL packages
     yum: state=latest name={{ item }}
     with_items:
     - "perl(ExtUtils::MakeMaker)"
@@ -142,27 +142,27 @@
     - "perl(LWP::UserAgent)"
     - "perl(Authen::NTLM)"
 
-  - name: Copiando arquivo Config.pm
+  - name: Copying file Config.pm
     copy:
       src: /opt/otrs/Kernel/Config.pm.dist
       dest: /opt/otrs/Kernel/Config.pm
 
-  - name: Criando um link sombólico
+  - name: Creating a somber link
     shell: ln -s /opt/otrs/scripts/apache2-httpd.include.conf /etc/httpd/conf.d/zzz_otrs.conf
 
-  - name: Setando permissões "otrs.SetPermissions.pl"
+  - name: Setting permissions "otrs.SetPermissions.pl"
     shell: /opt/otrs/bin/otrs.SetPermissions.pl --web-group=apache
 
-  - name: Habilitando o serviço do Apache
+  - name: Enabling the Apache service
     service: name=httpd state=stopped enabled=yes
 
-  - name: Copiando arquivo Deamon
+  - name: Copying Daemon file
     copy:
       src: /opt/otrs/var/cron/otrs_daemon.dist
       dest: /opt/otrs/var/cron/otrs_daemon
 
-  - name: startando o Cron
+  - name: Starting the Cron
     shell: /opt/otrs/bin/Cron.sh start otrs
 
-  - name: Reiniciando o Servidor
+  - name: Restarting the Server
     shell: reboot
