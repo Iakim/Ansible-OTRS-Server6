@@ -99,7 +99,9 @@
     - bzip2
 
   - name: Downloading OTRS
-    shell: wget -c -P /opt/  https://ftp.otrs.org/pub/otrs/otrs-6.0.2.tar.bz2
+    get_url:
+      url: https://ftp.otrs.org/pub/otrs/otrs-6.0.2.tar.bz2
+      dest: /opt
 
   - name: Unlinking file
     shell: tar -jxpf /opt/otrs-6.0.2.tar.bz2 -C /opt/
