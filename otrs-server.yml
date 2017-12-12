@@ -9,7 +9,8 @@
   - name: Stopping the Firewall service
     service: name=firewalld state=stopped enabled=no
 
-  - selinux:
+  - name: Disabling the selinux
+    selinux:
       state: disabled
 
   - name: Install EPEL repo.
