@@ -86,10 +86,14 @@
     service: name=mariadb state=stopped
 
   - name: Deleting logfile0 file
-    shell: rm -rf /var/lib/mysql/lib_logfile0
+    file:
+      path: /var/lib/mysql/lib_logfile0
+      state: absent
 
   - name: Deleting logfile1 file
-    shell: rm -rf /var/lib/mysql/lib_logfile1
+      file:
+      path: /var/lib/mysql/lib_logfile1
+      state: absent
 
   - name:  Starting the database again
     service: name=mariadb state=started
