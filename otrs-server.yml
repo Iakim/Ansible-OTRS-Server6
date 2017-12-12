@@ -32,7 +32,7 @@
   - name: Chkconfig ON
     shell: /sbin/chkconfig httpd on
 
-  - name: Instalando o Banco de Dados
+  - name: Installing the Database
     yum: state=latest name={{ item }}
     with_items:
     - mariadb
