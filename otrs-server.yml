@@ -45,7 +45,9 @@
     service: name=mariadb state=started enabled=yes
 
   - name: Removing the my.cnf file
-    shell: rm -rf /etc/my.cnf
+    file:
+      path: /etc/my.cnf
+      state: absent
 
   - name: Creating the my.cnf file
     file:
