@@ -1,11 +1,5 @@
-[![PyPI version](https://img.shields.io/pypi/v/ansible.svg)](https://pypi.python.org/pypi/ansible/2.4.2.0)
-# Ansible for install a OTRS Server 6
+# Ansible playbook for install a OTRS Server
 
-### Please note the following detail:
-- Your server will restart after a playbook run
-- After connecting again, execute the command:
-    
-          su -c "/opt/otrs/bin/otrs.Daemon.pl start" -s /bin/bash otrs
+- Changed for <a title="Ansible Repository" target="_blank" href="https://github.com/Iakim/Ansible">Ansible Repository</a>
 
-- After running the command go to http://yourip_or_hotname/otrs/installer.pl and make the necessary settings.
-- Visit https://www.otrs.com for more details.
+- Access old Playbook <a title="Old Playbook for OTRS Server" target="_blank" href="https://github.com/Iakim/Ansible-OTRS-Server6/tree/master">here</a>
